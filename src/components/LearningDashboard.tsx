@@ -10,7 +10,7 @@ import { SystemDesignStepOverview } from "@/components/SystemDesignStepOverview"
 import { TopicCard } from "@/components/TopicCard";
 import { SystemDesignTopicCard } from "@/components/SystemDesignTopicCard";
 import { ModuleSelector } from "@/components/ModuleSelector";
-import { Trophy, BookOpen, ArrowLeft } from "lucide-react";
+import { Trophy, BookOpen, ArrowLeft, Zap, Target, Award, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import dsaLogo from "@/assets/dsa-logo.png";
@@ -51,42 +51,63 @@ export const LearningDashboard = () => {
   // Show module selector if requested or no module selected
   if (showModuleSelector || !selectedModule) {
     return (
-      <div className="min-h-screen bg-background">
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
-          <div className="container flex h-16 items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={dsaLogo} alt="SwitchWise Logo" className="h-8 w-8" />
-              <h1 className="text-xl font-bold">SwitchWise</h1>
+      <div className="min-h-screen bg-gradient-hero bg-grid-pattern">
+        {/* Enhanced Header */}
+        <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-white/80 backdrop-blur-xl">
+          <div className="container flex h-20 items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <img src={dsaLogo} alt="SwitchWise Logo" className="h-12 w-12 rounded-xl shadow-glow" />
+                <div className="absolute -top-1 -right-1 h-4 w-4 bg-gradient-primary rounded-full animate-glow"></div>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold gradient-text">SwitchWise</h1>
+                <p className="text-sm text-muted-foreground font-medium">Career Transition Platform</p>
+              </div>
             </div>
             
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2">
-                <Trophy className="h-4 w-4 text-warning" />
-                <span className="text-sm font-medium">{userProgress.currentLevel}</span>
+              <div className="glass-effect px-4 py-2 rounded-full">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-achievement-gold" />
+                  <span className="text-sm font-semibold">{userProgress.currentLevel}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <BookOpen className="h-4 w-4 text-info" />
-                <span className="text-sm">{points} XP</span>
+              <div className="glass-effect px-4 py-2 rounded-full">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-xp-primary" />
+                  <span className="text-sm font-semibold">{points} XP</span>
+                </div>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="container py-8">
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-3xl font-bold mb-2">Choose Your Learning Path</h2>
-              <p className="text-muted-foreground">
-                Select a module to begin your journey towards landing your dream job
+        <main className="container py-16">
+          <div className="max-w-4xl mx-auto space-y-12">
+            {/* Hero Section */}
+            <div className="text-center space-y-6 animate-fade-in">
+              <div className="inline-flex items-center gap-2 bg-gradient-primary/10 px-4 py-2 rounded-full border border-primary/20">
+                <TrendingUp className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-primary">Accelerate Your Career Growth</span>
+              </div>
+              <h2 className="text-5xl font-bold gradient-text leading-tight">
+                Choose Your Learning Path
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                Master the skills that matter. Land your dream job with our expertly crafted learning modules 
+                designed for students and working professionals.
               </p>
             </div>
             
-            <ModuleSelector
-              modules={learningModules}
-              userModules={userProgress.modules}
-              selectedModule={selectedModule}
-              onModuleSelect={handleModuleSelect}
-            />
+            <div className="animate-slide-up">
+              <ModuleSelector
+                modules={learningModules}
+                userModules={userProgress.modules}
+                selectedModule={selectedModule}
+                onModuleSelect={handleModuleSelect}
+              />
+            </div>
           </div>
         </main>
       </div>
@@ -94,107 +115,122 @@ export const LearningDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
+    <div className="min-h-screen bg-gradient-hero">
+      {/* Enhanced Header */}
+      <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-white/80 backdrop-blur-xl">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={() => setShowModuleSelector(true)}
-              className="mr-2"
+              className="mr-2 hover:bg-primary/10 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <img src={dsaLogo} alt="SwitchWise Logo" className="h-8 w-8" />
+            <img src={dsaLogo} alt="SwitchWise Logo" className="h-10 w-10 rounded-lg shadow-card" />
             <div>
               <h1 className="text-xl font-bold">SwitchWise</h1>
-              <p className="text-xs text-muted-foreground">{currentModule?.name}</p>
+              <p className="text-xs text-muted-foreground font-medium">{currentModule?.name}</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-warning" />
-              <span className="text-sm font-medium">{userProgress.currentLevel}</span>
+          <div className="flex items-center gap-4">
+            <div className="glass-effect px-3 py-1.5 rounded-full">
+              <div className="flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-achievement-gold" />
+                <span className="text-sm font-medium">{userProgress.currentLevel}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-info" />
-              <span className="text-sm">{currentModuleCompletedTopics.length} topics completed</span>
+            <div className="glass-effect px-3 py-1.5 rounded-full">
+              <div className="flex items-center gap-2">
+                <Target className="h-4 w-4 text-info" />
+                <span className="text-sm">{currentModuleCompletedTopics.length} completed</span>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
       <main className="container py-8">
-        {/* Stats Dashboard */}
+        {/* Enhanced Stats Dashboard */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <XPIndicator 
-            currentXp={points}
-            level={userProgress.currentLevel}
-            nextLevelXp={500}
-          />
+          <div className="animate-bounce-in">
+            <XPIndicator 
+              currentXp={points}
+              level={userProgress.currentLevel}
+              nextLevelXp={500}
+            />
+          </div>
           
-          <Card className="hover:shadow-lg transition-all duration-200">
+          <Card className="card-modern floating-action animate-bounce-in" style={{ animationDelay: '0.1s' }}>
             <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl">🔥</span>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-gradient-secondary/20 rounded-xl">
+                  <Zap className="h-5 w-5 text-xp-secondary" />
+                </div>
                 <span className="font-semibold">Streak</span>
               </div>
-              <div className="text-2xl font-bold">{userProgress.streakDays}</div>
+              <div className="text-3xl font-bold text-gradient">{userProgress.streakDays}</div>
               <p className="text-sm text-muted-foreground">Days in a row</p>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-all duration-200">
+          <Card className="card-modern floating-action animate-bounce-in" style={{ animationDelay: '0.2s' }}>
             <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl">📊</span>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-info/20 rounded-xl">
+                  <Target className="h-5 w-5 text-info" />
+                </div>
                 <span className="font-semibold">Progress</span>
               </div>
-              <div className="text-2xl font-bold">{currentModuleCompletedTopics.length}</div>
+              <div className="text-3xl font-bold text-gradient">{currentModuleCompletedTopics.length}</div>
               <p className="text-sm text-muted-foreground">Topics completed</p>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-all duration-200">
+          <Card className="card-modern floating-action animate-bounce-in" style={{ animationDelay: '0.3s' }}>
             <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl">🏆</span>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-achievement-gold/20 rounded-xl">
+                  <Award className="h-5 w-5 text-achievement-gold" />
+                </div>
                 <span className="font-semibold">Achievements</span>
               </div>
-              <div className="text-2xl font-bold">{achievements.filter(a => a.earned).length}</div>
+              <div className="text-3xl font-bold text-gradient">{achievements.filter(a => a.earned).length}</div>
               <p className="text-sm text-muted-foreground">Badges earned</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Recent Achievements */}
-        <Card className="mb-8">
+        {/* Enhanced Achievements Section */}
+        <Card className="card-modern mb-8 animate-fade-in">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Trophy className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-3">
+              <div className="p-2 bg-achievement-gold/20 rounded-xl">
+                <Trophy className="h-5 w-5 text-achievement-gold" />
+              </div>
               Recent Achievements
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4 overflow-x-auto pb-2">
-              {achievements.map((achievement) => (
-                <AchievementBadge 
-                  key={achievement.id}
-                  achievement={achievement}
-                  size="lg"
-                />
+            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+              {achievements.map((achievement, index) => (
+                <div key={achievement.id} className="animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <AchievementBadge 
+                    achievement={achievement}
+                    size="lg"
+                  />
+                </div>
               ))}
             </div>
           </CardContent>
         </Card>
 
-        {/* Main Content Grid */}
+        {/* Enhanced Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Module Content */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 animate-slide-up">
             {selectedModule === 'dsa' ? (
               <StepOverview
                 step={dsaData}
@@ -213,20 +249,33 @@ export const LearningDashboard = () => {
           </div>
 
           {/* Current Topics */}
-          <div className="lg:col-span-2 space-y-6">
-            {selectedModule === 'dsa' ? (
-              <div>
-                <div>
-                  <h2 className="text-2xl font-semibold mb-1">
-                    {dsaData.sub_steps.find(s => s.sub_step_no === selectedSubStep)?.sub_step_title || "Topics"}
-                  </h2>
-                  <p className="text-muted-foreground">
-                    Complete these topics to progress in your DSA journey
-                  </p>
+          <div className="lg:col-span-2 space-y-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+            <div className="card-modern p-8">
+              <div className="mb-8">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="h-12 w-12 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow">
+                    <BookOpen className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-bold">
+                      {selectedModule === 'dsa' 
+                        ? dsaData.sub_steps.find(s => s.sub_step_no === selectedSubStep)?.sub_step_title || "Topics"
+                        : systemDesignData.find(s => s.step_no === selectedStep)?.head_step_no || "Topics"
+                      }
+                    </h2>
+                    <p className="text-muted-foreground">
+                      {selectedModule === 'dsa' 
+                        ? "Complete these topics to progress in your DSA journey"
+                        : "Master these system design concepts for senior engineering roles"
+                      }
+                    </p>
+                  </div>
                 </div>
-                
-                <div className="grid gap-4">
-                  {dsaData.sub_steps
+              </div>
+              
+              <div className="grid gap-6">
+                {selectedModule === 'dsa' ? (
+                  dsaData.sub_steps
                     .find(s => s.sub_step_no === selectedSubStep)
                     ?.topics.map((topic, index) => {
                       const isCompleted = currentModuleCompletedTopics.includes(topic.id);
@@ -237,30 +286,18 @@ export const LearningDashboard = () => {
                       );
                       
                       return (
-                        <TopicCard
-                          key={topic.id}
-                          topic={topic}
-                          isCompleted={isCompleted}
-                          isLocked={isLocked}
-                          onComplete={handleTopicComplete}
-                        />
+                        <div key={topic.id} className="animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                          <TopicCard
+                            topic={topic}
+                            isCompleted={isCompleted}
+                            isLocked={isLocked}
+                            onComplete={handleTopicComplete}
+                          />
+                        </div>
                       );
-                    })}
-                </div>
-              </div>
-            ) : (
-              <div>
-                <div>
-                  <h2 className="text-2xl font-semibold mb-1">
-                    {systemDesignData.find(s => s.step_no === selectedStep)?.head_step_no || "Topics"}
-                  </h2>
-                  <p className="text-muted-foreground">
-                    Master these system design concepts for senior engineering roles
-                  </p>
-                </div>
-                
-                <div className="grid gap-4">
-                  {systemDesignData
+                    })
+                ) : (
+                  systemDesignData
                     .find(s => s.step_no === selectedStep)
                     ?.topics.map((topic, index) => {
                       const isCompleted = currentModuleCompletedTopics.includes(topic.id);
@@ -271,18 +308,19 @@ export const LearningDashboard = () => {
                       );
                       
                       return (
-                        <SystemDesignTopicCard
-                          key={topic.id}
-                          topic={topic}
-                          isCompleted={isCompleted}
-                          isLocked={isLocked}
-                          onComplete={handleTopicComplete}
-                        />
+                        <div key={topic.id} className="animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                          <SystemDesignTopicCard
+                            topic={topic}
+                            isCompleted={isCompleted}
+                            isLocked={isLocked}
+                            onComplete={handleTopicComplete}
+                          />
+                        </div>
                       );
-                    })}
-                </div>
+                    })
+                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </main>
