@@ -2,10 +2,10 @@ import { ChevronRight, BookOpen, Target, Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ProgressBar } from "./ProgressBar";
 import { cn } from "@/lib/utils";
-import { LearningStep } from "@/types/learning";
+import { DSAStep } from "@/types/learning";
 
 interface StepOverviewProps {
-  step: LearningStep;
+  step: DSAStep;
   completedTopics: string[];
   onSubStepSelect?: (subStepNo: number) => void;
   selectedSubStep?: number;
