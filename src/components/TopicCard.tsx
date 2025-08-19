@@ -2,10 +2,10 @@ import { ExternalLink, Play, FileText, CheckCircle2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Topic } from "@/types/learning";
+import { DSATopic } from "@/types/learning";
 
 interface TopicCardProps {
-  topic: Topic;
+  topic: DSATopic;
   isCompleted?: boolean;
   isLocked?: boolean;
   onComplete?: (topicId: string) => void;

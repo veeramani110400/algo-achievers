@@ -1,6 +1,7 @@
-import { LearningStep } from "@/types/learning";
+import { DSAStep, LearningModule } from "@/types/learning";
+import { systemDesignData } from "./systemDesignData";
 
-export const learningData: LearningStep = {
+export const dsaData: DSAStep = {
   "step_no": 1,
   "step_title": "Learn the basics",
   "sub_steps": [
@@ -15,6 +16,7 @@ export const learningData: LearningStep = {
           "sl_no": 1,
           "step_title": "Learn the basics",
           "sub_step_title": "Things to Know in C++/Java/Python or any language",
+          "title": "User Input / Output",
           "question_title": "User Input / Output",
           "post_link": "https://takeuforward.org/c/c-basic-input-output/",
           "yt_link": "https://youtu.be/EAR7De6Goz4?t=250",
@@ -32,6 +34,7 @@ export const learningData: LearningStep = {
           "sl_no": 2,
           "step_title": "Learn the basics",
           "sub_step_title": "Things to Know in C++/Java/Python or any language",
+          "title": "Data Types",
           "question_title": "Data Types",
           "post_link": "",
           "yt_link": "https://youtu.be/EAR7De6Goz4?t=755",
@@ -49,6 +52,7 @@ export const learningData: LearningStep = {
           "sl_no": 3,
           "step_title": "Learn the basics",
           "sub_step_title": "Things to Know in C++/Java/Python or any language",
+          "title": "If Else statements",
           "question_title": "If Else statements",
           "post_link": "https://takeuforward.org/if-else/if-else-statements/",
           "yt_link": "https://youtu.be/EAR7De6Goz4?t=1259",
@@ -66,6 +70,7 @@ export const learningData: LearningStep = {
           "sl_no": 4,
           "step_title": "Learn the basics",
           "sub_step_title": "Things to Know in C++/Java/Python or any language",
+          "title": "Switch Statement",
           "question_title": "Switch Statement",
           "post_link": "https://takeuforward.org/switch-case/switch-case-statements/",
           "yt_link": "https://youtu.be/EAR7De6Goz4",
@@ -83,6 +88,7 @@ export const learningData: LearningStep = {
           "sl_no": 5,
           "step_title": "Learn the basics",
           "sub_step_title": "Things to Know in C++/Java/Python or any language",
+          "title": "What are arrays, strings?",
           "question_title": "What are arrays, strings?",
           "post_link": "",
           "yt_link": "https://youtu.be/EAR7De6Goz4?t=2415",
@@ -106,6 +112,7 @@ export const learningData: LearningStep = {
           "sl_no": 1,
           "step_title": "Learn the basics",
           "sub_step_title": "Build-up Logical Thinking",
+          "title": "Patterns",
           "question_title": "Patterns",
           "post_link": "https://takeuforward.org/strivers-a2z-dsa-course/must-do-pattern-problems-before-starting-dsa/",
           "yt_link": "https://www.youtube.com/watch?v=tNm_NNSB3_w&list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz&index=3",
@@ -129,6 +136,7 @@ export const learningData: LearningStep = {
           "sl_no": 1,
           "step_title": "Learn the basics",
           "sub_step_title": "Learn STL/Java-Collections or similar thing in your language",
+          "title": "C++ STL",
           "question_title": "C++ STL",
           "post_link": "https://takeuforward.org/c/c-stl-tutorial-most-frequent-used-stl-containers/",
           "yt_link": "https://www.youtube.com/watch?v=RRVYpIET_RU",
@@ -144,19 +152,53 @@ export const learningData: LearningStep = {
   ]
 };
 
+export const learningModules: LearningModule[] = [
+  {
+    id: "dsa",
+    name: "DSA Mastery",
+    description: "Master Data Structures & Algorithms for coding interviews",
+    icon: "💻",
+    color: "bg-blue-500",
+    totalSteps: 1,
+    type: "dsa"
+  },
+  {
+    id: "system-design",
+    name: "System Design",
+    description: "Learn scalable system design for senior roles",
+    icon: "🏗️",
+    color: "bg-green-500",
+    totalSteps: systemDesignData.length,
+    type: "system-design"
+  }
+];
+
 export const userProgress = {
   userId: "user123",
-  currentStep: 1,
-  currentSubStep: 1,
-  completedTopics: ["srinpttpt", "dttyps"],
-  totalPoints: 150,
+  selectedModule: "dsa",
+  modules: {
+    "dsa": {
+      moduleId: "dsa",
+      currentStep: 1,
+      currentSubStep: 1,
+      completedTopics: ["srinpttpt", "dttyps"],
+      totalPoints: 150
+    },
+    "system-design": {
+      moduleId: "system-design",
+      currentStep: 1,
+      completedTopics: [],
+      totalPoints: 0
+    }
+  },
   currentLevel: "Beginner",
   streakDays: 3,
   achievements: ["first_steps", "consistency_3"],
   timeSpent: {
     "srinpttpt": 45,
     "dttyps": 30
-  }
+  },
+  totalPoints: 150
 };
 
 export const achievements = [

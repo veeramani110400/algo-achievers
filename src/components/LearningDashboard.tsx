@@ -1,189 +1,291 @@
 import { useState } from "react";
-import { Flame, Calendar, Star, Trophy, BookOpen } from "lucide-react";
-import { StepOverview } from "./StepOverview";
-import { TopicCard } from "./TopicCard";
-import { XPIndicator } from "./XPIndicator";
-import { AchievementBadge } from "./AchievementBadge";
-import { learningData, userProgress, achievements } from "@/data/learningData";
-import { useToast } from "@/hooks/use-toast";
+import { dsaData, learningModules, userProgress, achievements, levels } from "@/data/learningData";
+import { systemDesignData } from "@/data/systemDesignData";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { XPIndicator } from "@/components/XPIndicator";
+import { AchievementBadge } from "@/components/AchievementBadge";
+import { StepOverview } from "@/components/StepOverview";
+import { SystemDesignStepOverview } from "@/components/SystemDesignStepOverview";
+import { TopicCard } from "@/components/TopicCard";
+import { SystemDesignTopicCard } from "@/components/SystemDesignTopicCard";
+import { ModuleSelector } from "@/components/ModuleSelector";
+import { Trophy, BookOpen, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import dsaLogo from "@/assets/dsa-logo.png";
 
 export const LearningDashboard = () => {
-  const [completedTopics, setCompletedTopics] = useState<string[]>(userProgress.completedTopics);
-  const [selectedSubStep, setSelectedSubStep] = useState<number>(1);
+  const [selectedModule, setSelectedModule] = useState<string>(userProgress.selectedModule);
+  const [completedTopics, setCompletedTopics] = useState<Record<string, string[]>>({
+    dsa: userProgress.modules.dsa.completedTopics,
+    "system-design": userProgress.modules["system-design"].completedTopics
+  });
+  const [selectedSubStep, setSelectedSubStep] = useState<number>(userProgress.modules.dsa.currentSubStep || 1);
+  const [selectedStep, setSelectedStep] = useState<number>(1);
   const [points, setPoints] = useState(userProgress.totalPoints);
-  const { toast } = useToast();
+  const [showModuleSelector, setShowModuleSelector] = useState(false);
 
   const handleTopicComplete = (topicId: string) => {
-    setCompletedTopics(prev => [...prev, topicId]);
-    setPoints(prev => prev + 50);
-    
-    toast({
-      title: "Topic Completed! 🎉",
-      description: "You earned 50 XP! Keep up the great work!",
-    });
+    const moduleCompletedTopics = completedTopics[selectedModule] || [];
+    if (!moduleCompletedTopics.includes(topicId)) {
+      setCompletedTopics({
+        ...completedTopics,
+        [selectedModule]: [...moduleCompletedTopics, topicId]
+      });
+      setPoints(points + 50);
+      toast.success("Topic completed! +50 XP", {
+        description: "Keep up the great work!",
+      });
+    }
   };
 
-  const selectedSubStepData = learningData.sub_steps.find(
-    subStep => subStep.sub_step_no === selectedSubStep
-  );
+  const handleModuleSelect = (moduleId: string) => {
+    setSelectedModule(moduleId);
+    setShowModuleSelector(false);
+  };
 
-  return (
-    <div className="min-h-screen bg-gradient-hero">
-      {/* Header with Logo */}
-      <header className="bg-card/50 backdrop-blur-sm border-b border-border/50 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <img 
-                src={dsaLogo} 
-                alt="DSA Learning Platform" 
-                className="w-10 h-10 rounded-lg shadow-glow"
-              />
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                  DSA Mastery
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  Master Data Structures & Algorithms
-                </p>
-              </div>
+  const currentModule = learningModules.find(m => m.id === selectedModule);
+  const currentModuleCompletedTopics = completedTopics[selectedModule] || [];
+
+  // Show module selector if requested or no module selected
+  if (showModuleSelector || !selectedModule) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
+          <div className="container flex h-16 items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img src={dsaLogo} alt="SwitchWise Logo" className="h-8 w-8" />
+              <h1 className="text-xl font-bold">SwitchWise</h1>
             </div>
             
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 bg-accent/20 px-3 py-1 rounded-full">
-                <Trophy className="w-4 h-4 text-achievement-gold" />
-                <span className="text-sm font-medium text-foreground">
-                  Level {userProgress.currentLevel}
-                </span>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-warning" />
+                <span className="text-sm font-medium">{userProgress.currentLevel}</span>
               </div>
-              <div className="flex items-center gap-2 bg-success/20 px-3 py-1 rounded-full">
-                <BookOpen className="w-4 h-4 text-success" />
-                <span className="text-sm font-medium text-foreground">
-                  {completedTopics.length} / {learningData.sub_steps.reduce((acc, sub) => acc + sub.topics.length, 0)} Topics
-                </span>
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-info" />
+                <span className="text-sm">{points} XP</span>
               </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="container py-8">
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-3xl font-bold mb-2">Choose Your Learning Path</h2>
+              <p className="text-muted-foreground">
+                Select a module to begin your journey towards landing your dream job
+              </p>
+            </div>
+            
+            <ModuleSelector
+              modules={learningModules}
+              userModules={userProgress.modules}
+              selectedModule={selectedModule}
+              onModuleSelect={handleModuleSelect}
+            />
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
+        <div className="container flex h-16 items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setShowModuleSelector(true)}
+              className="mr-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <img src={dsaLogo} alt="SwitchWise Logo" className="h-8 w-8" />
+            <div>
+              <h1 className="text-xl font-bold">SwitchWise</h1>
+              <p className="text-xs text-muted-foreground">{currentModule?.name}</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <Trophy className="h-4 w-4 text-warning" />
+              <span className="text-sm font-medium">{userProgress.currentLevel}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-info" />
+              <span className="text-sm">{currentModuleCompletedTopics.length} topics completed</span>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <main className="container py-8">
         {/* Stats Dashboard */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-fade-in">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <XPIndicator 
             currentXp={points}
             level={userProgress.currentLevel}
             nextLevelXp={500}
           />
           
-          <div className="bg-gradient-card p-6 rounded-xl border border-border shadow-card hover:shadow-glow transition-all duration-300 hover:scale-105 group">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-xp-secondary/20 rounded-lg group-hover:bg-xp-secondary/30 transition-colors">
-                <Flame className="w-5 h-5 text-xp-secondary" />
+          <Card className="hover:shadow-lg transition-all duration-200">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-2xl">🔥</span>
+                <span className="font-semibold">Streak</span>
               </div>
-              <span className="text-sm font-semibold text-foreground">Fire Streak</span>
-            </div>
-            <div className="text-3xl font-bold text-foreground mb-1">
-              {userProgress.streakDays}
-            </div>
-            <p className="text-xs text-muted-foreground">Days in a row</p>
-          </div>
+              <div className="text-2xl font-bold">{userProgress.streakDays}</div>
+              <p className="text-sm text-muted-foreground">Days in a row</p>
+            </CardContent>
+          </Card>
 
-          <div className="bg-gradient-card p-6 rounded-xl border border-border shadow-card hover:shadow-glow transition-all duration-300 hover:scale-105 group">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-info/20 rounded-lg group-hover:bg-info/30 transition-colors">
-                <Calendar className="w-5 h-5 text-info" />
+          <Card className="hover:shadow-lg transition-all duration-200">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-2xl">📊</span>
+                <span className="font-semibold">Progress</span>
               </div>
-              <span className="text-sm font-semibold text-foreground">Progress</span>
-            </div>
-            <div className="text-3xl font-bold text-foreground mb-1">
-              {completedTopics.length}
-            </div>
-            <p className="text-xs text-muted-foreground">Topics completed</p>
-          </div>
+              <div className="text-2xl font-bold">{currentModuleCompletedTopics.length}</div>
+              <p className="text-sm text-muted-foreground">Topics completed</p>
+            </CardContent>
+          </Card>
 
-          <div className="bg-gradient-card p-6 rounded-xl border border-border shadow-card hover:shadow-glow transition-all duration-300 hover:scale-105 group">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-achievement-gold/20 rounded-lg group-hover:bg-achievement-gold/30 transition-colors">
-                <Star className="w-5 h-5 text-achievement-gold" />
+          <Card className="hover:shadow-lg transition-all duration-200">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-2xl">🏆</span>
+                <span className="font-semibold">Achievements</span>
               </div>
-              <span className="text-sm font-semibold text-foreground">Achievements</span>
-            </div>
-            <div className="text-3xl font-bold text-foreground mb-1">
-              {achievements.filter(a => a.earned).length}
-            </div>
-            <p className="text-xs text-muted-foreground">Badges earned</p>
-          </div>
+              <div className="text-2xl font-bold">{achievements.filter(a => a.earned).length}</div>
+              <p className="text-sm text-muted-foreground">Badges earned</p>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Achievements Section */}
-        <div className="mb-10 bg-card/30 backdrop-blur-sm rounded-xl p-6 border border-border/50">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-achievement-gold/20 rounded-lg">
-              <Trophy className="w-5 h-5 text-achievement-gold" />
+        {/* Recent Achievements */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="h-5 w-5" />
+              Recent Achievements
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4 overflow-x-auto pb-2">
+              {achievements.map((achievement) => (
+                <AchievementBadge 
+                  key={achievement.id}
+                  achievement={achievement}
+                  size="lg"
+                />
+              ))}
             </div>
-            <h2 className="text-xl font-bold text-foreground">Recent Achievements</h2>
-          </div>
-          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            {achievements.map((achievement) => (
-              <AchievementBadge 
-                key={achievement.id}
-                achievement={achievement}
-                size="lg"
+          </CardContent>
+        </Card>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Module Content */}
+          <div className="lg:col-span-1">
+            {selectedModule === 'dsa' ? (
+              <StepOverview
+                step={dsaData}
+                completedTopics={currentModuleCompletedTopics}
+                selectedSubStep={selectedSubStep}
+                onSubStepSelect={setSelectedSubStep}
               />
-            ))}
+            ) : (
+              <SystemDesignStepOverview
+                steps={systemDesignData}
+                completedTopics={currentModuleCompletedTopics}
+                currentStep={selectedStep}
+                onStepSelect={setSelectedStep}
+              />
+            )}
+          </div>
+
+          {/* Current Topics */}
+          <div className="lg:col-span-2 space-y-6">
+            {selectedModule === 'dsa' ? (
+              <div>
+                <div>
+                  <h2 className="text-2xl font-semibold mb-1">
+                    {dsaData.sub_steps.find(s => s.sub_step_no === selectedSubStep)?.sub_step_title || "Topics"}
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Complete these topics to progress in your DSA journey
+                  </p>
+                </div>
+                
+                <div className="grid gap-4">
+                  {dsaData.sub_steps
+                    .find(s => s.sub_step_no === selectedSubStep)
+                    ?.topics.map((topic, index) => {
+                      const isCompleted = currentModuleCompletedTopics.includes(topic.id);
+                      const isLocked = index > 0 && !currentModuleCompletedTopics.includes(
+                        dsaData.sub_steps
+                          .find(s => s.sub_step_no === selectedSubStep)
+                          ?.topics[index - 1].id || ""
+                      );
+                      
+                      return (
+                        <TopicCard
+                          key={topic.id}
+                          topic={topic}
+                          isCompleted={isCompleted}
+                          isLocked={isLocked}
+                          onComplete={handleTopicComplete}
+                        />
+                      );
+                    })}
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div>
+                  <h2 className="text-2xl font-semibold mb-1">
+                    {systemDesignData.find(s => s.step_no === selectedStep)?.head_step_no || "Topics"}
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Master these system design concepts for senior engineering roles
+                  </p>
+                </div>
+                
+                <div className="grid gap-4">
+                  {systemDesignData
+                    .find(s => s.step_no === selectedStep)
+                    ?.topics.map((topic, index) => {
+                      const isCompleted = currentModuleCompletedTopics.includes(topic.id);
+                      const isLocked = index > 0 && !currentModuleCompletedTopics.includes(
+                        systemDesignData
+                          .find(s => s.step_no === selectedStep)
+                          ?.topics[index - 1].id || ""
+                      );
+                      
+                      return (
+                        <SystemDesignTopicCard
+                          key={topic.id}
+                          topic={topic}
+                          isCompleted={isCompleted}
+                          isLocked={isLocked}
+                          onComplete={handleTopicComplete}
+                        />
+                      );
+                    })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* Step Overview */}
-        <StepOverview 
-          step={learningData}
-          completedTopics={completedTopics}
-          onSubStepSelect={setSelectedSubStep}
-          selectedSubStep={selectedSubStep}
-        />
-
-        {/* Current Sub-step Topics */}
-        {selectedSubStepData && (
-          <div className="bg-card/30 backdrop-blur-sm rounded-xl p-6 border border-border/50">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
-                <span className="text-lg font-bold text-primary-foreground">
-                  {selectedSubStepData.sub_step_no}
-                </span>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">
-                  {selectedSubStepData.sub_step_title}
-                </h2>
-                <p className="text-muted-foreground text-sm mt-1">
-                  {selectedSubStepData.topics.length} topics to master
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {selectedSubStepData.topics.map((topic, index) => {
-                const isCompleted = completedTopics.includes(topic.id);
-                const isLocked = index > 0 && !completedTopics.includes(
-                  selectedSubStepData.topics[index - 1].id
-                );
-
-                return (
-                  <TopicCard
-                    key={topic.id}
-                    topic={topic}
-                    isCompleted={isCompleted}
-                    isLocked={isLocked}
-                    onComplete={handleTopicComplete}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
+      </main>
     </div>
   );
 };
