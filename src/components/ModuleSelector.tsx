@@ -93,7 +93,7 @@ export const ModuleSelector = ({
                     <Clock className="h-4 w-4 text-info" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg">{module.totalSteps}</div>
+                    <div className="font-semibold text-lg">{module.topics}</div>
                     <div className="text-xs text-muted-foreground">Chapters</div>
                   </div>
                 </div>

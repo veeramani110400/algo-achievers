@@ -64,14 +64,34 @@ export interface CoreSubjectsStep {
   data: CoreSubjectsTopic[];
 }
 
+export interface BlogArticle {
+  id: string;
+  sl_no_in_step: number;
+  title: string;
+  excerpt: string;
+  read_time: string;
+  category: string;
+  author: string;
+  published_date: string;
+  featured_image: string;
+  content: string;
+}
+
+export interface BlogStep {
+  step_no: number;
+  topic: string;
+  articles: BlogArticle[];
+}
+
 export interface LearningModule {
   id: string;
   name: string;
   description: string;
   icon: string;
+  difficulty: string;
+  duration: string;
+  topics: number;
   color: string;
-  totalSteps: number;
-  type: 'dsa' | 'system-design' | 'core-subjects';
 }
 
 export interface ModuleProgress {

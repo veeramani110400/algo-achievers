@@ -2,6 +2,7 @@ import { useState } from "react";
 import { dsaData, learningModules, userProgress, achievements, levels } from "@/data/learningData";
 import { systemDesignData } from "@/data/systemDesignData";
 import { coreSubjectsData } from "@/data/coreSubjectsData";
+import { blogsData } from "@/data/blogsData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { XPIndicator } from "@/components/XPIndicator";
@@ -9,21 +10,24 @@ import { AchievementBadge } from "@/components/AchievementBadge";
 import { StepOverview } from "@/components/StepOverview";
 import { SystemDesignStepOverview } from "@/components/SystemDesignStepOverview";
 import { CoreSubjectsStepOverview } from "@/components/CoreSubjectsStepOverview";
+import { BlogStepOverview } from "@/components/BlogStepOverview";
 import { TopicCard } from "@/components/TopicCard";
 import { SystemDesignTopicCard } from "@/components/SystemDesignTopicCard";
 import { CoreSubjectsTopicCard } from "@/components/CoreSubjectsTopicCard";
+import { BlogCard } from "@/components/BlogCard";
 import { ModuleSelector } from "@/components/ModuleSelector";
 import { Trophy, BookOpen, ArrowLeft, Zap, Target, Award, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import dsaLogo from "@/assets/dsa-logo.png";
+import switchWiseLogo from "@/assets/switchwise-logo.png";
 
 export const LearningDashboard = () => {
   const [selectedModule, setSelectedModule] = useState<string>(userProgress.selectedModule);
   const [completedTopics, setCompletedTopics] = useState<Record<string, string[]>>({
     dsa: userProgress.modules.dsa.completedTopics,
     "system-design": userProgress.modules["system-design"].completedTopics,
-    "core-subjects": userProgress.modules["core-subjects"].completedTopics
+    "core-subjects": userProgress.modules["core-subjects"].completedTopics,
+    "blogs": userProgress.modules.blogs.completedTopics
   });
   const [selectedSubStep, setSelectedSubStep] = useState<number>(userProgress.modules.dsa.currentSubStep || 1);
   const [selectedStep, setSelectedStep] = useState<number>(1);
@@ -61,7 +65,7 @@ export const LearningDashboard = () => {
           <div className="container flex h-20 items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="relative">
-                <img src={dsaLogo} alt="SwitchWise Logo" className="h-12 w-12 rounded-xl shadow-glow" />
+                <img src={switchWiseLogo} alt="SwitchWise Logo" className="h-12 w-12 rounded-xl shadow-glow" />
                 <div className="absolute -top-1 -right-1 h-4 w-4 bg-gradient-primary rounded-full animate-glow"></div>
               </div>
               <div>
@@ -132,7 +136,7 @@ export const LearningDashboard = () => {
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <img src={dsaLogo} alt="SwitchWise Logo" className="h-10 w-10 rounded-lg shadow-card" />
+            <img src={switchWiseLogo} alt="SwitchWise Logo" className="h-10 w-10 rounded-lg shadow-card" />
             <div>
               <h1 className="text-xl font-bold">SwitchWise</h1>
               <p className="text-xs text-muted-foreground font-medium">{currentModule?.name}</p>
@@ -249,9 +253,16 @@ export const LearningDashboard = () => {
                 currentStep={selectedStep}
                 onStepSelect={setSelectedStep}
               />
-            ) : (
+            ) : selectedModule === 'core-subjects' ? (
               <CoreSubjectsStepOverview
                 steps={coreSubjectsData}
+                completedTopics={currentModuleCompletedTopics}
+                currentStep={selectedStep}
+                onStepSelect={setSelectedStep}
+              />
+            ) : (
+              <BlogStepOverview
+                steps={blogsData}
                 completedTopics={currentModuleCompletedTopics}
                 currentStep={selectedStep}
                 onStepSelect={setSelectedStep}
@@ -272,8 +283,10 @@ export const LearningDashboard = () => {
                       {selectedModule === 'dsa' 
                         ? dsaData.sub_steps.find(s => s.sub_step_no === selectedSubStep)?.sub_step_title || "Topics"
                         : selectedModule === 'system-design'
-                          ? systemDesignData.find(s => s.step_no === selectedStep)?.head_step_no || "Topics"
-                          : coreSubjectsData.find(s => s.step_no === selectedStep)?.topic || "Topics"
+                        ? systemDesignData.find(s => s.step_no === selectedStep)?.head_step_no || "Topics"
+                        : selectedModule === 'core-subjects'
+                          ? coreSubjectsData.find(s => s.step_no === selectedStep)?.topic || "Topics"
+                          : blogsData.find(s => s.step_no === selectedStep)?.topic || "Topics"
                       }
                     </h2>
                     <p className="text-muted-foreground">
@@ -281,7 +294,9 @@ export const LearningDashboard = () => {
                         ? "Complete these topics to progress in your DSA journey"
                         : selectedModule === 'system-design'
                           ? "Master these system design concepts for senior engineering roles"
-                          : "Build strong fundamentals in computer science core subjects"
+                          : selectedModule === 'core-subjects'
+                            ? "Build strong fundamentals in computer science core subjects"
+                            : "Read expert articles and insights for career growth"
                       }
                     </p>
                   </div>
@@ -333,7 +348,7 @@ export const LearningDashboard = () => {
                         </div>
                       );
                     })
-                ) : (
+                ) : selectedModule === 'core-subjects' ? (
                   coreSubjectsData
                     .find(s => s.step_no === selectedStep)
                     ?.data.map((topic, index) => {
@@ -348,6 +363,28 @@ export const LearningDashboard = () => {
                         <div key={topic.id} className="animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
                           <CoreSubjectsTopicCard
                             topic={topic}
+                            isCompleted={isCompleted}
+                            isLocked={isLocked}
+                            onComplete={handleTopicComplete}
+                          />
+                        </div>
+                      );
+                    })
+                ) : (
+                  blogsData
+                    .find(s => s.step_no === selectedStep)
+                    ?.articles.map((article, index) => {
+                      const isCompleted = currentModuleCompletedTopics.includes(article.id);
+                      const isLocked = index > 0 && !currentModuleCompletedTopics.includes(
+                        blogsData
+                          .find(s => s.step_no === selectedStep)
+                          ?.articles[index - 1].id || ""
+                      );
+                      
+                      return (
+                        <div key={article.id} className="animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                          <BlogCard
+                            article={article}
                             isCompleted={isCompleted}
                             isLocked={isLocked}
                             onComplete={handleTopicComplete}

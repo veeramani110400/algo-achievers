@@ -1,6 +1,7 @@
-import { DSAStep, LearningModule } from "@/types/learning";
+import { DSAStep, LearningModule, UserProgress, Achievement, Level } from "@/types/learning";
 import { systemDesignData } from "./systemDesignData";
 import { coreSubjectsData } from "./coreSubjectsData";
+import { blogsData } from "./blogsData";
 
 export const dsaData: DSAStep = {
   "step_no": 1,
@@ -157,33 +158,46 @@ export const learningModules: LearningModule[] = [
   {
     id: "dsa",
     name: "DSA Mastery",
-    description: "Master Data Structures & Algorithms for coding interviews",
-    icon: "💻",
-    color: "bg-blue-500",
-    totalSteps: 1,
-    type: "dsa"
+    description: "Master Data Structures & Algorithms for technical interviews",
+    icon: "🧠",
+    difficulty: "Intermediate",
+    duration: "3-6 months",
+    topics: 180,
+    color: "from-blue-500 to-purple-600"
   },
   {
     id: "system-design",
     name: "System Design",
-    description: "Learn scalable system design for senior roles",
+    description: "Learn to design scalable systems like a senior engineer",
     icon: "🏗️",
-    color: "bg-green-500",
-    totalSteps: systemDesignData.length,
-    type: "system-design"
+    difficulty: "Advanced", 
+    duration: "2-4 months",
+    topics: 45,
+    color: "from-green-500 to-blue-500"
   },
   {
     id: "core-subjects",
     name: "Core Subjects",
-    description: "Master DBMS, OS, Networks & other CS fundamentals",
+    description: "Build strong fundamentals in computer science",
     icon: "📚",
-    color: "bg-purple-500",
-    totalSteps: coreSubjectsData.length,
-    type: "core-subjects"
+    difficulty: "Beginner",
+    duration: "4-8 months", 
+    topics: 120,
+    color: "from-orange-500 to-red-500"
+  },
+  {
+    id: "blogs",
+    name: "Career Blogs",
+    description: "Expert insights and tips for career transformation",
+    icon: "✍️",
+    difficulty: "All Levels",
+    duration: "Ongoing", 
+    topics: blogsData.reduce((total, step) => total + step.articles.length, 0),
+    color: "from-purple-500 to-pink-500"
   }
 ];
 
-export const userProgress = {
+export const userProgress: UserProgress = {
   userId: "user123",
   selectedModule: "dsa",
   modules: {
@@ -195,13 +209,19 @@ export const userProgress = {
       totalPoints: 150
     },
     "system-design": {
-      moduleId: "system-design",
+      moduleId: "system-design", 
       currentStep: 1,
       completedTopics: [],
       totalPoints: 0
     },
     "core-subjects": {
       moduleId: "core-subjects",
+      currentStep: 1,
+      completedTopics: [],
+      totalPoints: 0
+    },
+    "blogs": {
+      moduleId: "blogs",
       currentStep: 1,
       completedTopics: [],
       totalPoints: 0
@@ -217,7 +237,7 @@ export const userProgress = {
   totalPoints: 150
 };
 
-export const achievements = [
+export const achievements: Achievement[] = [
   {
     id: "first_steps",
     name: "First Steps",
@@ -247,7 +267,7 @@ export const achievements = [
   }
 ];
 
-export const levels = [
+export const levels: Level[] = [
   { name: "Beginner", minXp: 0, benefits: ["Basic tracking"] },
   { name: "Intermediate", minXp: 500, benefits: ["Advanced analytics", "Custom themes"] },
   { name: "Advanced", minXp: 1500, benefits: ["Priority support", "Exclusive content"] },
