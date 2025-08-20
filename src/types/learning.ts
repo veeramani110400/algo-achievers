@@ -32,7 +32,13 @@ export interface SystemDesignTopic extends BaseTopic {
   head_step_no: string;
 }
 
-export type Topic = DSATopic | SystemDesignTopic;
+// Core Subjects specific topic structure
+export interface CoreSubjectsTopic extends BaseTopic {
+  sl_no_in_step: number;
+  article_link?: string;
+}
+
+export type Topic = DSATopic | SystemDesignTopic | CoreSubjectsTopic;
 
 export interface SubStep {
   sub_step_no: number;
@@ -52,6 +58,12 @@ export interface SystemDesignStep {
   topics: SystemDesignTopic[];
 }
 
+export interface CoreSubjectsStep {
+  step_no: number;
+  topic: string;
+  data: CoreSubjectsTopic[];
+}
+
 export interface LearningModule {
   id: string;
   name: string;
@@ -59,7 +71,7 @@ export interface LearningModule {
   icon: string;
   color: string;
   totalSteps: number;
-  type: 'dsa' | 'system-design';
+  type: 'dsa' | 'system-design' | 'core-subjects';
 }
 
 export interface ModuleProgress {

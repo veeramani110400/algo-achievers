@@ -1,5 +1,6 @@
 import { DSAStep, LearningModule } from "@/types/learning";
 import { systemDesignData } from "./systemDesignData";
+import { coreSubjectsData } from "./coreSubjectsData";
 
 export const dsaData: DSAStep = {
   "step_no": 1,
@@ -170,6 +171,15 @@ export const learningModules: LearningModule[] = [
     color: "bg-green-500",
     totalSteps: systemDesignData.length,
     type: "system-design"
+  },
+  {
+    id: "core-subjects",
+    name: "Core Subjects",
+    description: "Master DBMS, OS, Networks & other CS fundamentals",
+    icon: "📚",
+    color: "bg-purple-500",
+    totalSteps: coreSubjectsData.length,
+    type: "core-subjects"
   }
 ];
 
@@ -186,6 +196,12 @@ export const userProgress = {
     },
     "system-design": {
       moduleId: "system-design",
+      currentStep: 1,
+      completedTopics: [],
+      totalPoints: 0
+    },
+    "core-subjects": {
+      moduleId: "core-subjects",
       currentStep: 1,
       completedTopics: [],
       totalPoints: 0

@@ -61,6 +61,7 @@ All colors MUST be HSL.
     --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(120 76% 50%));
     --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(240 4.8% 97%));
     --gradient-hero: linear-gradient(135deg, hsl(240 4.8% 95.9%), hsl(0 0% 100%));
+    --gradient-purple: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 90% 50%));
 
     /* Shadows & Effects */
     --shadow-card: 0 4px 12px hsl(240 10% 3.9% / 0.08);

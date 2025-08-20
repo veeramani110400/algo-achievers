@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { dsaData, learningModules, userProgress, achievements, levels } from "@/data/learningData";
 import { systemDesignData } from "@/data/systemDesignData";
+import { coreSubjectsData } from "@/data/coreSubjectsData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { XPIndicator } from "@/components/XPIndicator";
 import { AchievementBadge } from "@/components/AchievementBadge";
 import { StepOverview } from "@/components/StepOverview";
 import { SystemDesignStepOverview } from "@/components/SystemDesignStepOverview";
+import { CoreSubjectsStepOverview } from "@/components/CoreSubjectsStepOverview";
 import { TopicCard } from "@/components/TopicCard";
 import { SystemDesignTopicCard } from "@/components/SystemDesignTopicCard";
+import { CoreSubjectsTopicCard } from "@/components/CoreSubjectsTopicCard";
 import { ModuleSelector } from "@/components/ModuleSelector";
 import { Trophy, BookOpen, ArrowLeft, Zap, Target, Award, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,7 +22,8 @@ export const LearningDashboard = () => {
   const [selectedModule, setSelectedModule] = useState<string>(userProgress.selectedModule);
   const [completedTopics, setCompletedTopics] = useState<Record<string, string[]>>({
     dsa: userProgress.modules.dsa.completedTopics,
-    "system-design": userProgress.modules["system-design"].completedTopics
+    "system-design": userProgress.modules["system-design"].completedTopics,
+    "core-subjects": userProgress.modules["core-subjects"].completedTopics
   });
   const [selectedSubStep, setSelectedSubStep] = useState<number>(userProgress.modules.dsa.currentSubStep || 1);
   const [selectedStep, setSelectedStep] = useState<number>(1);
@@ -238,9 +242,16 @@ export const LearningDashboard = () => {
                 selectedSubStep={selectedSubStep}
                 onSubStepSelect={setSelectedSubStep}
               />
-            ) : (
+            ) : selectedModule === 'system-design' ? (
               <SystemDesignStepOverview
                 steps={systemDesignData}
+                completedTopics={currentModuleCompletedTopics}
+                currentStep={selectedStep}
+                onStepSelect={setSelectedStep}
+              />
+            ) : (
+              <CoreSubjectsStepOverview
+                steps={coreSubjectsData}
                 completedTopics={currentModuleCompletedTopics}
                 currentStep={selectedStep}
                 onStepSelect={setSelectedStep}
@@ -260,13 +271,17 @@ export const LearningDashboard = () => {
                     <h2 className="text-3xl font-bold">
                       {selectedModule === 'dsa' 
                         ? dsaData.sub_steps.find(s => s.sub_step_no === selectedSubStep)?.sub_step_title || "Topics"
-                        : systemDesignData.find(s => s.step_no === selectedStep)?.head_step_no || "Topics"
+                        : selectedModule === 'system-design'
+                          ? systemDesignData.find(s => s.step_no === selectedStep)?.head_step_no || "Topics"
+                          : coreSubjectsData.find(s => s.step_no === selectedStep)?.topic || "Topics"
                       }
                     </h2>
                     <p className="text-muted-foreground">
                       {selectedModule === 'dsa' 
                         ? "Complete these topics to progress in your DSA journey"
-                        : "Master these system design concepts for senior engineering roles"
+                        : selectedModule === 'system-design'
+                          ? "Master these system design concepts for senior engineering roles"
+                          : "Build strong fundamentals in computer science core subjects"
                       }
                     </p>
                   </div>
@@ -296,7 +311,7 @@ export const LearningDashboard = () => {
                         </div>
                       );
                     })
-                ) : (
+                ) : selectedModule === 'system-design' ? (
                   systemDesignData
                     .find(s => s.step_no === selectedStep)
                     ?.topics.map((topic, index) => {
@@ -310,6 +325,28 @@ export const LearningDashboard = () => {
                       return (
                         <div key={topic.id} className="animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
                           <SystemDesignTopicCard
+                            topic={topic}
+                            isCompleted={isCompleted}
+                            isLocked={isLocked}
+                            onComplete={handleTopicComplete}
+                          />
+                        </div>
+                      );
+                    })
+                ) : (
+                  coreSubjectsData
+                    .find(s => s.step_no === selectedStep)
+                    ?.data.map((topic, index) => {
+                      const isCompleted = currentModuleCompletedTopics.includes(topic.id);
+                      const isLocked = index > 0 && !currentModuleCompletedTopics.includes(
+                        coreSubjectsData
+                          .find(s => s.step_no === selectedStep)
+                          ?.data[index - 1].id || ""
+                      );
+                      
+                      return (
+                        <div key={topic.id} className="animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                          <CoreSubjectsTopicCard
                             topic={topic}
                             isCompleted={isCompleted}
                             isLocked={isLocked}
