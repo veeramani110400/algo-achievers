@@ -27,12 +27,11 @@ export const ModuleSelector = ({
         return (
           <Card 
             key={module.id}
-            className={`group cursor-pointer transition-all duration-500 hover:shadow-elevated border-2 ${
+            className={`group cursor-pointer transition-all duration-300 hover:shadow-elevated border-2 ${
               isSelected 
                 ? 'border-primary shadow-glow bg-gradient-to-br from-primary/5 to-accent/5' 
                 : 'border-border/50 hover:border-primary/50 bg-gradient-card'
-            } animate-bounce-in`}
-            style={{ animationDelay: `${index * 0.2}s` }}
+            } animate-fade-in`}
             onClick={() => onModuleSelect(module.id)}
           >
             <CardHeader className="pb-4">

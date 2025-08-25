@@ -13,7 +13,7 @@ import { TopicCard } from "@/components/TopicCard";
 import { SystemDesignTopicCard } from "@/components/SystemDesignTopicCard";
 import { CoreSubjectsTopicCard } from "@/components/CoreSubjectsTopicCard";
 import { ModuleSelector } from "@/components/ModuleSelector";
-import { Trophy, BookOpen, ArrowLeft, Zap, Target, Award, TrendingUp } from "lucide-react";
+import { Trophy, BookOpen, ArrowLeft, Zap, Target, Award, TrendingUp, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import dsaLogo from "@/assets/dsa-logo.png";
@@ -71,6 +71,15 @@ export const LearningDashboard = () => {
             </div>
             
             <div className="flex items-center gap-6">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => window.location.href = '/leaderboard'}
+                className="glass-effect px-4 py-2 rounded-full hover:bg-primary/10 transition-colors"
+              >
+                <Users className="h-4 w-4 text-primary mr-2" />
+                <span className="text-sm font-semibold">Leaderboard</span>
+              </Button>
               <div className="glass-effect px-4 py-2 rounded-full">
                 <div className="flex items-center gap-2">
                   <Trophy className="h-4 w-4 text-achievement-gold" />
@@ -99,12 +108,17 @@ export const LearningDashboard = () => {
                 Choose Your Learning Path
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                Master the skills that matter. Land your dream job with our expertly crafted learning modules 
-                designed for students and working professionals.
+                Master the skills that matter. Join thousands of professionals who've successfully switched careers with our platform.
               </p>
+              <div className="mt-6 p-4 bg-gradient-primary/10 rounded-xl border border-primary/20 max-w-xl mx-auto">
+                <p className="text-sm italic text-muted-foreground">
+                  "Every professional was once an amateur. Every expert was once a beginner."
+                </p>
+                <p className="text-xs text-primary font-medium mt-1">- Helen Hayes</p>
+              </div>
             </div>
             
-            <div className="animate-slide-up">
+            <div className="animate-fade-in">
               <ModuleSelector
                 modules={learningModules}
                 userModules={userProgress.modules}
@@ -159,7 +173,7 @@ export const LearningDashboard = () => {
       <main className="container py-8">
         {/* Enhanced Stats Dashboard */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="animate-bounce-in">
+          <div className="animate-fade-in">
             <XPIndicator 
               currentXp={points}
               level={userProgress.currentLevel}
@@ -167,7 +181,7 @@ export const LearningDashboard = () => {
             />
           </div>
           
-          <Card className="card-modern floating-action animate-bounce-in" style={{ animationDelay: '0.1s' }}>
+          <Card className="card-modern floating-action animate-fade-in">
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 bg-gradient-secondary/20 rounded-xl">
@@ -180,7 +194,7 @@ export const LearningDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="card-modern floating-action animate-bounce-in" style={{ animationDelay: '0.2s' }}>
+          <Card className="card-modern floating-action animate-fade-in">
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 bg-info/20 rounded-xl">
@@ -193,7 +207,7 @@ export const LearningDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="card-modern floating-action animate-bounce-in" style={{ animationDelay: '0.3s' }}>
+          <Card className="card-modern floating-action animate-fade-in">
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 bg-achievement-gold/20 rounded-xl">
@@ -220,7 +234,7 @@ export const LearningDashboard = () => {
           <CardContent>
             <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
               {achievements.map((achievement, index) => (
-                <div key={achievement.id} className="animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div key={achievement.id} className="animate-fade-in">
                   <AchievementBadge 
                     achievement={achievement}
                     size="lg"
@@ -234,7 +248,7 @@ export const LearningDashboard = () => {
         {/* Enhanced Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Module Content */}
-          <div className="lg:col-span-1 animate-slide-up">
+          <div className="lg:col-span-1 animate-fade-in">
             {selectedModule === 'dsa' ? (
               <StepOverview
                 step={dsaData}
@@ -260,7 +274,7 @@ export const LearningDashboard = () => {
           </div>
 
           {/* Current Topics */}
-          <div className="lg:col-span-2 space-y-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <div className="lg:col-span-2 space-y-8 animate-fade-in">
             <div className="card-modern p-8">
               <div className="mb-8">
                 <div className="flex items-center gap-4 mb-4">
@@ -301,7 +315,7 @@ export const LearningDashboard = () => {
                       );
                       
                       return (
-                        <div key={topic.id} className="animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                        <div key={topic.id} className="animate-fade-in">
                           <TopicCard
                             topic={topic}
                             isCompleted={isCompleted}
@@ -323,7 +337,7 @@ export const LearningDashboard = () => {
                       );
                       
                       return (
-                        <div key={topic.id} className="animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                        <div key={topic.id} className="animate-fade-in">
                           <SystemDesignTopicCard
                             topic={topic}
                             isCompleted={isCompleted}
@@ -345,7 +359,7 @@ export const LearningDashboard = () => {
                       );
                       
                       return (
-                        <div key={topic.id} className="animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                        <div key={topic.id} className="animate-fade-in">
                           <CoreSubjectsTopicCard
                             topic={topic}
                             isCompleted={isCompleted}
