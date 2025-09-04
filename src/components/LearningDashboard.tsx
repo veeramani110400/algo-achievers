@@ -249,14 +249,14 @@ export const LearningDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Module Content */}
           <div className="lg:col-span-1 animate-fade-in">
-            {selectedModule === 'dsa' ? (
-              <StepOverview
-                step={dsaData}
-                completedTopics={currentModuleCompletedTopics}
-                selectedSubStep={selectedSubStep}
-                onSubStepSelect={setSelectedSubStep}
-              />
-            ) : selectedModule === 'system-design' ? (
+          {selectedModule === 'dsa' ? (
+            <StepOverview
+              step={dsaData.find(s => s.step_no === selectedStep) || dsaData[0]}
+              completedTopics={currentModuleCompletedTopics}
+              selectedSubStep={selectedSubStep}
+              onSubStepSelect={setSelectedSubStep}
+            />
+          ) : selectedModule === 'system-design' ? (
               <SystemDesignStepOverview
                 steps={systemDesignData}
                 completedTopics={currentModuleCompletedTopics}
@@ -284,7 +284,7 @@ export const LearningDashboard = () => {
                   <div>
                     <h2 className="text-3xl font-bold">
                       {selectedModule === 'dsa' 
-                        ? dsaData.sub_steps.find(s => s.sub_step_no === selectedSubStep)?.sub_step_title || "Topics"
+                        ? dsaData.find(s => s.step_no === selectedStep)?.sub_steps.find(s => s.sub_step_no === selectedSubStep)?.sub_step_title || "Topics"
                         : selectedModule === 'system-design'
                           ? systemDesignData.find(s => s.step_no === selectedStep)?.head_step_no || "Topics"
                           : coreSubjectsData.find(s => s.step_no === selectedStep)?.topic || "Topics"
@@ -304,12 +304,12 @@ export const LearningDashboard = () => {
               
               <div className="grid gap-6">
                 {selectedModule === 'dsa' ? (
-                  dsaData.sub_steps
+                  dsaData.find(s => s.step_no === selectedStep)?.sub_steps
                     .find(s => s.sub_step_no === selectedSubStep)
                     ?.topics.map((topic, index) => {
                       const isCompleted = currentModuleCompletedTopics.includes(topic.id);
                       const isLocked = index > 0 && !currentModuleCompletedTopics.includes(
-                        dsaData.sub_steps
+                        dsaData.find(s => s.step_no === selectedStep)?.sub_steps
                           .find(s => s.sub_step_no === selectedSubStep)
                           ?.topics[index - 1].id || ""
                       );
