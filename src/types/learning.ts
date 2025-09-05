@@ -21,6 +21,7 @@ export interface DSATopic extends BaseTopic {
   lc_link?: string;
   difficulty: number;
   ques_topic: string;
+  title?: string; // Make title optional since we use question_title
 }
 
 // Legacy interface for backward compatibility
